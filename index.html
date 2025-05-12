@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test – části těla (španělsky)</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 30px;
+    }
+    #proverb {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    input {
+      padding: 10px;
+      font-size: 18px;
+      width: 60%;
+    }
+    #feedback {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    #score {
+      font-size: 20px;
+      margin-top: 20px;
+      display: none;
+    }
+    #retryBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="proverb"></div>
+  <input type="text" id="answer" placeholder="Doplň španělsky...">
+  <div id="feedback"></div>
+  <div id="score"></div>
+  <button id="retryBtn" onclick="startQuiz()">Opakovat</button>
+
+  <script>
+    const slovicka = [
+      ["hlava", "cabeza"],
+      ["čelo", "frente"],
+      ["oči", "ojos"],
+      ["obočí", "cejas"],
+      ["řasy", "pestañas"],
+      ["uši", "orejas"],
+      ["pusa", "boca"],
+      ["zuby", "dientes"],
+      ["nos", "nariz"],
+      ["tváře", "mejillas"],
+      ["brada", "barbilla"],
+      ["jazyk", "lengua"],
+      ["obličej", "cara"],
+      ["krk", "cuello"],
+      ["ramena", "hombros"],
+      ["ruce", "manos"],
+      ["loket", "codo"],
+      ["zápěstí", "muñeca"],
+      ["dlaň", "palma"],
+      ["prsty", "dedos"],
+      ["nehty", "uñas"],
+      ["záda", "espalda"],
+      ["břicho", "abdomen"],
+      ["tělo", "cuerpo"],
+      ["zadek", "trasero"],
+      ["nohy", "piernas"],
+      ["koleno", "rodilla"],
+      ["chodidlo", "pie"],
+      ["křídla", "alas"],
+      ["rohy", "cuernos"],
+      ["kůže", "piel"],
+      ["mozek", "cerebro"],
+      ["srdce", "corazón"]
+    ];
+
+    let shuffled = [];
+    let current = 0;
+    let score = 0;
+
+    function shuffle(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function startQuiz() {
+      shuffled = shuffle([...slovicka]);
+      current = 0;
+      score = 0;
+      document.getElementById("retryBtn").style.display = "none";
+      const scoreDiv = document.getElementById("score");
+      scoreDiv.style.display = "none";
+      scoreDiv.innerText = "";
+      showNext();
+    }
+
+    function showNext() {
+      const answerInput = document.getElementById("answer");
+      const feedback = document.getElementById("feedback");
+      if (current >= shuffled.length) {
+        document.getElementById("proverb").innerText = "Konec testu.";
+        answerInput.style.display = "none";
+        feedback.style.display = "none";
+        const scoreDiv = document.getElementById("score");
+        scoreDiv.innerText = `Správně: ${score} / ${shuffled.length}`;
+        scoreDiv.style.display = "block";
+        document.getElementById("retryBtn").style.display = "inline-block";
+        return;
+      }
+      document.getElementById("proverb").innerText = `Přelož: ${shuffled[current][0]}`;
+      answerInput.style.display = "inline-block";
+      answerInput.value = "";
+      answerInput.style.backgroundColor = "white";
+      answerInput.disabled = false;
+      feedback.style.display = "block";
+      feedback.innerText = "";
+      answerInput.focus();
+    }
+
+    document.getElementById("answer").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        const userAnswer = this.value.trim().toLowerCase();
+        const correctAnswer = shuffled[current][1].toLowerCase();
+        const feedback = document.getElementById("feedback");
+        if (userAnswer === correctAnswer) {
+          this.style.backgroundColor = "lightgreen";
+          feedback.innerText = "Správně!";
+          score++;
+        } else {
+          this.style.backgroundColor = "salmon";
+          feedback.innerText = `Špatně. Správně: ${shuffled[current][1]}`;
+        }
+        this.disabled = true;
+        current++;
+        setTimeout(showNext, 1500);
+      }
+    });
+
+    startQuiz();
+  </script>
+</body>
+</html>
